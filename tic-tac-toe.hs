@@ -8,10 +8,12 @@ showSquare X = "X"
 showSquare O = "O"
 showSquare (Empty i) = show i
 
-data Grid = List Square
+showGrid :: [Square] -> IO ()
+showGrid grid =
+  mapM_ putStrLn (showGridLines grid)
 
-showGrid :: [Square] -> [String]
-showGrid grid = 
+showGridLines :: [Square] -> [String]
+showGridLines grid = 
   let lines = chunksOf 3 grid
   in 
     intersperse "---------" (map showLine lines)
@@ -20,5 +22,5 @@ showLine :: [Square] -> String
 showLine = intercalate " | " . map showSquare
 
 tic_tac_toe = do
-  let grid = [Empty i | i <- [0..8]]
-  mapM_ putStrLn (showGrid grid)
+  let grid = [Empty i | i <- [1..9]]
+  showGrid grid
