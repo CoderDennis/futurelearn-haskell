@@ -4,7 +4,7 @@ import Data.List
 
 tic_tac_toe :: IO ()
 tic_tac_toe = do
-  let grid = [Empty i | i <- ['a'..'i']]
+  let grid = [Empty i | i <- ['1'..'9']]
   turn grid X
 
 data Square = X | O | Empty Char deriving (Eq)
@@ -39,7 +39,7 @@ turn grid player =
   do putStrLn ""
      showGrid grid
      putStrLn ""
-     putStr ("Player " ++ (showSquare player) ++ ", enter a square letter (q to quit): ")
+     putStr ("Player " ++ (showSquare player) ++ ", enter a square number (q to quit): ")
      l <- getLine
      let s = (l!!0)
      if s=='q'
