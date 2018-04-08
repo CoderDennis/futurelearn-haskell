@@ -35,7 +35,7 @@ turn grid player =
   do putStrLn ""
      showGrid grid
      putStrLn ""
-     putStr ("Player " ++ (showSquare player) ++ ", enter a square (q to quit): ")
+     putStr ("Player " ++ (showSquare player) ++ ", enter a square letter (q to quit): ")
      l <- getLine
      let s = (l!!0)
      if s=='q'
