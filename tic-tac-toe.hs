@@ -1,4 +1,11 @@
+-- run tic_tac_toe function to play
+
 import Data.List
+
+tic_tac_toe :: IO ()
+tic_tac_toe = do
+  let grid = [Empty i | i <- ['a'..'i']]
+  turn grid X
 
 data Square = X | O | Empty Char deriving (Eq)
 
@@ -26,9 +33,6 @@ showGridLines grid =
 showLine :: [Square] -> String
 showLine = intercalate " | " . map showSquare
 
-tic_tac_toe = do
-  let grid = [Empty i | i <- ['a'..'i']]
-  turn grid X
 
 turn :: [Square] -> Square -> IO ()
 turn grid player = 
