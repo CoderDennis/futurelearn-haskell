@@ -1,19 +1,25 @@
 import Data.List
+import Data.List.Split
 
 data Square = X | O | Empty
 
-instance Show Square where
-  show X = show "X"
-  show O = show "O"
-  show Empty = show " "
+showSquare :: Square -> String
+showSquare X = "X"
+showSquare O = "O"
+showSquare Empty = " "
 
-data Grid = List Square deriving (Show)
+data Grid = List Square
 
-showGrid :: Show a => [a] -> String
-showGrid = intercalate "|" . map show
+showGrid :: [Square] -> [String]
+showGrid grid = 
+  let lines = chunksOf 3 grid
+  in 
+    map showGridLine lines
+
+showGridLine = intercalate "|" . map showSquare
 
 tic_tac_toe = do
   let grid = [Empty, Empty, Empty,
           Empty, Empty, Empty,
           X, O, X]
-  putStrLn (showGrid grid)
+  show (showGrid grid)
