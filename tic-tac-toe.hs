@@ -1,7 +1,7 @@
 import Data.List
 import Data.List.Split
 
-data Square = X | O | Empty Char deriving (Eq, Show)
+data Square = X | O | Empty Char deriving (Eq)
 
 showSquare :: Square -> String
 showSquare X = "X"
