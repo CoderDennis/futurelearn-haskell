@@ -1,7 +1,7 @@
 import Data.List
 import Data.List.Split
 
-data Square = X | O | Empty Char deriving (Eq)
+data Square = X | O | Empty Char deriving (Eq, Show)
 
 showSquare :: Square -> String
 showSquare X = "X"
@@ -39,9 +39,10 @@ turn grid player =
             then turn (setSquare grid player s) (if player == X then O else X)
             else turn grid player
 
+setSquare :: [Square] -> Square -> Char -> [Square]
 setSquare grid player squareChar =
-  --let (x,_:ys) = splitWhen (matchSquare squareChar) grid
-  grid
+  let [x,ys] = splitWhen (\sq -> matchSquare sq squareChar) grid
+   in x ++ player : ys
       
 matchSquare :: Square -> Char -> Bool
 matchSquare (Empty c) c' = c == c'
