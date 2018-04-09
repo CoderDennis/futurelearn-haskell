@@ -68,21 +68,18 @@ turn game@(Game {grid = grid, player = player}) =
      let s = (l!!0)
      if s=='q'
         then return ()
-        else if (Empty s) `elem` grid
-            then turn Game { grid = setSquare grid (squareForPlayer player) s
-                           , player = togglePlayer player
-                           }
-            else turn game
+        else let sq = (Empty s)
+              in if sq `elem` grid
+                    then turn Game { grid = replaceSquare grid sq (squareForPlayer player)
+                                   , player = togglePlayer player
+                                   }
+                    else turn game
 
-setSquare :: [Square] -> Square -> Char -> [Square]
-setSquare grid squareValue squareChar =
-  let (x,_:ys) = break (\sq -> matchSquare sq squareChar) grid
-   in x ++ squareValue : ys
+replaceSquare :: [Square] -> Square -> Square -> [Square]
+replaceSquare grid oldSquare newSquare =
+  let (x,_:ys) = break ((==) oldSquare) grid
+   in x ++ newSquare : ys
       
-matchSquare :: Square -> Char -> Bool
-matchSquare (Empty c) c' = c == c'
-matchSquare _ _ = False
-
 togglePlayer :: Player -> Player
 togglePlayer player =
   if player == PlayerX then PlayerO else PlayerX
