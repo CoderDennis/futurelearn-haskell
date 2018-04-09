@@ -3,7 +3,7 @@
 import Data.List
 
 tic_tac_toe :: IO ()
-tic_tac_toe = do
+tic_tac_toe = 
   turn newGame
 
 data Square 
