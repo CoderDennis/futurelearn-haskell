@@ -4,10 +4,35 @@ import Data.List
 
 tic_tac_toe :: IO ()
 tic_tac_toe = do
-  let grid = [Empty i | i <- ['1'..'9']]
-  turn grid X
+  turn newGame
 
-data Square = X | O | Empty Char deriving (Eq)
+data Square 
+  = X 
+  | O 
+  | Empty Char 
+  deriving (Eq)
+
+data Player
+  = PlayerX
+  | PlayerO
+  | Cat
+  deriving (Eq, Show)
+
+type Grid = [Square]
+
+data Game = Game { grid :: Grid
+                 , player :: Player
+                 }
+
+newGame = 
+  Game { grid = [Empty i | i <- ['1'..'9']]
+       , player = PlayerX
+       }
+
+squareForPlayer :: Player -> Square
+squareForPlayer PlayerX = X
+squareForPlayer PlayerO = O
+squareForPlayer _ = error "Only PlayerX or PlayerO may play a square"
 
 showSquare :: Square -> String
 showSquare X = "X"
@@ -33,27 +58,33 @@ showGridLines grid =
 showLine :: [Square] -> String
 showLine = intercalate " | " . map showSquare
 
-
-turn :: [Square] -> Square -> IO ()
-turn grid player = 
+turn :: Game -> IO ()
+turn game@(Game {grid = grid, player = player}) = 
   do putStrLn ""
      showGrid grid
      putStrLn ""
-     putStr ("Player " ++ (showSquare player) ++ ", enter a square number (q to quit): ")
+     putStr ((show player) ++ ", enter a square number (q to quit): ")
      l <- getLine
      let s = (l!!0)
      if s=='q'
         then return ()
         else if (Empty s) `elem` grid
-            then turn (setSquare grid player s) (if player == X then O else X)
-            else turn grid player
+            then let game' = Game { grid = setSquare grid (squareForPlayer player) s
+                                  , player = togglePlayer player
+                                  }
+                   in turn game'
+            else turn game
 
 setSquare :: [Square] -> Square -> Char -> [Square]
-setSquare grid player squareChar =
+setSquare grid squareValue squareChar =
   let (x,_:ys) = break (\sq -> matchSquare sq squareChar) grid
-   in x ++ player : ys
+   in x ++ squareValue : ys
       
 matchSquare :: Square -> Char -> Bool
 matchSquare (Empty c) c' = c == c'
 matchSquare _ _ = False
+
+togglePlayer :: Player -> Player
+togglePlayer player =
+  if player == PlayerX then PlayerO else PlayerX
 
