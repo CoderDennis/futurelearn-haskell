@@ -39,7 +39,7 @@ showSquare X = "X"
 showSquare O = "O"
 showSquare (Empty i) = [i]
 
-showGrid :: [Square] -> IO ()
+showGrid :: Grid -> IO ()
 showGrid grid =
   mapM_ putStrLn (showGridLines grid)
 
@@ -49,7 +49,7 @@ chunksOf n l
   | n > 0 = (take n l) : (chunksOf n (drop n l))
   | otherwise = error "n must be greater than zero"
 
-showGridLines :: [Square] -> [String]
+showGridLines :: Grid -> [String]
 showGridLines grid = 
   let lines = chunksOf 3 grid
   in 
@@ -79,7 +79,7 @@ turn game@(Game {grid = grid, player = player}) =
                        _     -> turn game
 
 
-replaceSquare :: [Square] -> Square -> Square -> [Square]
+replaceSquare :: Grid -> Square -> Square -> Grid
 replaceSquare grid oldSquare newSquare =
   let (x,_:ys) = break ((==) oldSquare) grid
    in x ++ newSquare : ys
@@ -88,7 +88,7 @@ togglePlayer :: Player -> Player
 togglePlayer player =
   if player == PlayerX then PlayerO else PlayerX
 
-findWinner :: [Square] -> Maybe Player
+findWinner :: Grid -> Maybe Player
 findWinner grid =
   -- get rows, columns, and diagonals
   -- filter by those that only have X or O values
@@ -100,7 +100,7 @@ findWinner grid =
                     then Nothing
                     else Just Cat
 
-getAllLines :: [Square] -> [[Square]]
+getAllLines :: Grid -> [[Square]]
 getAllLines grid =
   let diag1 = [grid!!0, grid!!4, grid!!8]
       diag2 = [grid!!2, grid!!4, grid!!6]
