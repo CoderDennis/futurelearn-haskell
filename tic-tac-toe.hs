@@ -69,10 +69,9 @@ turn game@(Game {grid = grid, player = player}) =
      if s=='q'
         then return ()
         else if (Empty s) `elem` grid
-            then let game' = Game { grid = setSquare grid (squareForPlayer player) s
-                                  , player = togglePlayer player
-                                  }
-                   in turn game'
+            then turn Game { grid = setSquare grid (squareForPlayer player) s
+                           , player = togglePlayer player
+                           }
             else turn game
 
 setSquare :: [Square] -> Square -> Char -> [Square]
