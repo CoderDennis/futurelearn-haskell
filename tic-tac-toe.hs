@@ -68,15 +68,16 @@ turn game@(Game {grid = grid, player = player}) =
                          return ()
        Nothing -> do putStr ((show player) ++ ", enter a square number (q to quit): ")
                      l <- getLine
-                     let s = (l!!0)
-                     if s=='q'
-                        then return ()
-                        else let sq = (Empty s)
-                             in if sq `elem` grid
-                                   then turn Game { grid = replaceSquare grid sq (squareForPlayer player)
-                                                  , player = togglePlayer player
-                                                  }
-                                   else turn game
+                     case l of
+                       ['q'] -> return ()
+                       [s]   -> let sq = (Empty s)
+                                in if sq `elem` grid
+                                      then turn Game { grid = replaceSquare grid sq (squareForPlayer player)
+                                                     , player = togglePlayer player
+                                                     }
+                                      else turn game
+                       _     -> turn game
+
 
 replaceSquare :: [Square] -> Square -> Square -> [Square]
 replaceSquare grid oldSquare newSquare =
