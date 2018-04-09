@@ -41,19 +41,17 @@ showSquare (Empty i) = [i]
 
 showGrid :: Grid -> IO ()
 showGrid grid =
-  mapM_ putStrLn (showGridLines grid)
+  mapM_ putStrLn $ showGridLines grid
 
 chunksOf :: Int -> [a] -> [[a]]
 chunksOf _ [] = []
 chunksOf n l
-  | n > 0 = (take n l) : (chunksOf n (drop n l))
+  | n > 0 = (take n l) : (chunksOf n $ drop n l)
   | otherwise = error "n must be greater than zero"
 
 showGridLines :: Grid -> [String]
 showGridLines grid = 
-  let lines = chunksOf 3 grid
-  in 
-    intersperse "---------" (map showLine lines)
+  intersperse "---------" (map showLine $ chunksOf 3 grid)
 
 showLine :: [Square] -> String
 showLine = intercalate " | " . map showSquare
@@ -70,14 +68,13 @@ turn game@(Game {grid = grid, player = player}) =
                      l <- getLine
                      case l of
                        ['q'] -> return ()
-                       [s]   -> let sq = (Empty s)
+                       [s]   -> let sq = Empty s
                                 in if sq `elem` grid
                                       then turn Game { grid = replaceSquare grid sq (squareForPlayer player)
                                                      , player = togglePlayer player
                                                      }
                                       else turn game
                        _     -> turn game
-
 
 replaceSquare :: Grid -> Square -> Square -> Grid
 replaceSquare grid oldSquare newSquare =
@@ -109,7 +106,7 @@ getAllLines grid =
    in [diag1, diag2] ++ rows ++ cols
 
 isThreeInARow :: [Square] -> Bool
-isThreeInARow line@[a,b,c] = (nub line) == [a]
+isThreeInARow line@[a,_,_] = (nub line) == [a]
 isThreeInARow _ = False
 
 squareIsEmpty :: Square -> Bool
