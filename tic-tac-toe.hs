@@ -63,17 +63,20 @@ turn game@(Game {grid = grid, player = player}) =
   do putStrLn ""
      showGrid grid
      putStrLn ""
-     putStr ((show player) ++ ", enter a square number (q to quit): ")
-     l <- getLine
-     let s = (l!!0)
-     if s=='q'
-        then return ()
-        else let sq = (Empty s)
-              in if sq `elem` grid
-                    then turn Game { grid = replaceSquare grid sq (squareForPlayer player)
-                                   , player = togglePlayer player
-                                   }
-                    else turn game
+     case (findWinner game) of
+       Just winner -> do putStrLn ((show winner) ++ " won!")
+                         return ()
+       Nothing -> do putStr ((show player) ++ ", enter a square number (q to quit): ")
+                     l <- getLine
+                     let s = (l!!0)
+                     if s=='q'
+                        then return ()
+                        else let sq = (Empty s)
+                             in if sq `elem` grid
+                                   then turn Game { grid = replaceSquare grid sq (squareForPlayer player)
+                                                  , player = togglePlayer player
+                                                  }
+                                   else turn game
 
 replaceSquare :: [Square] -> Square -> Square -> [Square]
 replaceSquare grid oldSquare newSquare =
@@ -83,4 +86,22 @@ replaceSquare grid oldSquare newSquare =
 togglePlayer :: Player -> Player
 togglePlayer player =
   if player == PlayerX then PlayerO else PlayerX
+
+{-
+-- With any 3x3 magic square the sum of each row, column, and diagonal is 15.
+-- This is an example and may be useful for finding a winner.
+magicNumbers = [ 2, 7, 6
+               , 9, 5, 1
+               , 4, 3, 8
+               ]
+-}
+
+findWinner :: Game -> Maybe Player
+findWinner (Game {grid=grid}) =
+  Nothing
+  -- zip grid with magicNumbers?
+  -- get rows, columns, and diagonals
+  -- filter by those that only have X or O values
+  -- use magic numbers to find a sum of 15 for any given row/column/diagonal
+  -- if no winner and no Empty squares, then Cat is winner
 
