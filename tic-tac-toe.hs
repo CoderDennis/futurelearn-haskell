@@ -10,7 +10,7 @@ data Square
   = X 
   | O 
   | Empty Char 
-  deriving (Eq)
+  deriving (Eq, Show)
 
 data Player
   = PlayerX
@@ -63,7 +63,7 @@ turn game@(Game {grid = grid, player = player}) =
   do putStrLn ""
      showGrid grid
      putStrLn ""
-     case (findWinner game) of
+     case (findWinner grid) of
        Just winner -> do putStrLn ((show winner) ++ " won!")
                          return ()
        Nothing -> do putStr ((show player) ++ ", enter a square number (q to quit): ")
@@ -88,21 +88,31 @@ togglePlayer :: Player -> Player
 togglePlayer player =
   if player == PlayerX then PlayerO else PlayerX
 
-{-
--- With any 3x3 magic square the sum of each row, column, and diagonal is 15.
--- This is an example and may be useful for finding a winner.
-magicNumbers = [ 2, 7, 6
-               , 9, 5, 1
-               , 4, 3, 8
-               ]
--}
-
-findWinner :: Game -> Maybe Player
-findWinner (Game {grid=grid}) =
-  Nothing
-  -- zip grid with magicNumbers?
+findWinner :: [Square] -> Maybe Player
+findWinner grid =
   -- get rows, columns, and diagonals
   -- filter by those that only have X or O values
-  -- use magic numbers to find a sum of 15 for any given row/column/diagonal
   -- if no winner and no Empty squares, then Cat is winner
+  case (filter isThreeInARow $ getAllLines grid) of
+    [[X,X,X]] -> Just PlayerX
+    [[O,O,O]] -> Just PlayerO
+    _         -> if (any squareIsEmpty grid)
+                    then Nothing
+                    else Just Cat
+
+getAllLines :: [Square] -> [[Square]]
+getAllLines grid =
+  let diag1 = [grid!!0, grid!!4, grid!!8]
+      diag2 = [grid!!2, grid!!4, grid!!6]
+      rows = chunksOf 3 grid
+      cols = transpose rows
+   in [diag1, diag2] ++ rows ++ cols
+
+isThreeInARow :: [Square] -> Bool
+isThreeInARow line@[a,b,c] = (nub line) == [a]
+isThreeInARow _ = False
+
+squareIsEmpty :: Square -> Bool
+squareIsEmpty (Empty _) = True
+squareIsEmpty _ = False
 
