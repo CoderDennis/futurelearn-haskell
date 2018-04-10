@@ -10,7 +10,7 @@ data Square
   = X 
   | O 
   | Empty Char 
-  deriving (Eq, Show)
+  deriving (Eq, Show) -- Show is useful for experimenting in GHCi, but not required by normal execution
 
 data Player
   = PlayerX
@@ -40,8 +40,8 @@ showSquare O = "O"
 showSquare (Empty i) = [i]
 
 showGrid :: Grid -> IO ()
-showGrid grid =
-  mapM_ putStrLn $ showGridLines grid
+showGrid =
+  mapM_ putStrLn . showGridLines
 
 chunksOf :: Int -> [a] -> [[a]]
 chunksOf _ [] = []
@@ -50,8 +50,8 @@ chunksOf n l
   | otherwise = error "n must be greater than zero"
 
 showGridLines :: Grid -> [String]
-showGridLines grid = 
-  intersperse "---------" (map showLine $ chunksOf 3 grid)
+showGridLines = 
+  intersperse "---------" . map showLine . chunksOf 3
 
 showLine :: [Square] -> String
 showLine = intercalate " | " . map showSquare
@@ -82,8 +82,8 @@ replaceSquare grid oldSquare newSquare =
    in x ++ newSquare : ys
       
 togglePlayer :: Player -> Player
-togglePlayer player =
-  if player == PlayerX then PlayerO else PlayerX
+togglePlayer PlayerX = PlayerO
+togglePlayer _ = PlayerX
 
 findWinner :: Grid -> Maybe Player
 findWinner grid =
