@@ -1,3 +1,5 @@
+import Data.List
+
 data Tree = Leaf | Node Int Tree Tree deriving Show
 
 treeSum :: Tree -> Int
@@ -5,12 +7,11 @@ treeSum Leaf = 0
 treeSum (Node val left right) =
   val + (treeSum left) + (treeSum right)
 
-isSortedTree :: Tree -> Int -> Int -> Bool
-isSortedTree Leaf _ _ = True
-isSortedTree (Node x left right) minVal maxVal =
-  let leftSorted  = isSortedTree left minVal x
-      rightSorted = isSortedTree right x maxVal
-  in x >= minVal && x < maxVal && leftSorted && rightSorted
+isSortedTree :: Tree -> Bool
+isSortedTree t =
+  let l = toList t
+      s = sort l
+   in l == s
 
 addNewMax :: Tree -> Tree
 addNewMax Leaf = Node 0 Leaf Leaf
