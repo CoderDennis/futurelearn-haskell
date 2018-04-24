@@ -1,6 +1,7 @@
 import Data.List
 
 -- optimized versions of functions to produce infinite list of prime numbers
+-- try calling primes'!!1000 vs. primes!!1000 to see the difference when retreiving the 1000th prime.
 
 hasproperfactor :: Int -> Bool -- returns True as soon as it finds a factor
 hasproperfactor x = any (\y -> (x `mod` y == 0)) [3..(x `div` 2)] -- only need to check up to half of x
